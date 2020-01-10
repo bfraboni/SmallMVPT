@@ -86,6 +86,7 @@ struct Config
     std::string mOutputName;
     Vec2i       mResolution;
     bool        mReuse;
+    int         mCameraNumber;
     int         mSceneID = 0;
     float       mPhongExp = -1;
 };
@@ -199,6 +200,7 @@ void ParseCommandline(int argc, const char *argv[], Config &oConfig)
     oConfig.mRadiusFactor  = 0.003f;
     oConfig.mRadiusAlpha   = 0.75f;
     oConfig.mReuse         = false;
+    oConfig.mCameraNumber  = 9;
 
     // Load arguments
     for(int i=1; i<argc; i++)
@@ -310,8 +312,8 @@ void ParseCommandline(int argc, const char *argv[], Config &oConfig)
     // Load multiple cameras and multiple framebuffers for multi-view
     if(oConfig.mAlgorithm == Config::kMultiViewPathTracing)
     {
-        scene->LoadMultiView(oConfig.mResolution);
-        oConfig.mFramebuffers.resize(scene->mCameras.size());
+        scene->LoadMultiView(oConfig.mResolution, oConfig.mCameraNumber);
+        oConfig.mFramebuffers.resize(oConfig.mCameraNumber);
     }
 
     scene->BuildSceneSphere();

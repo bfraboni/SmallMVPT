@@ -447,7 +447,7 @@ public:
     }
 
     // add support for multi view path tracing
-    void LoadMultiView( const Vec2i &aResolution )
+    void LoadMultiView( const Vec2i &aResolution, const int aCameraNumber )
     {
         // printf("loading cameras...\n");
         
@@ -460,19 +460,17 @@ public:
         Vec3f focus = 4 * forward + position;
 
         // number of cameras
-        const int nb = 3; 
+        mCameraNumber = aCameraNumber;
         const float d = 0.25; 
 
         // setup translating cameras
-        for(int i = -(nb-1)/2; i <= (nb-1)/2; i++)
+        for(int i = -(mCameraNumber-1)/2; i <= (mCameraNumber-1)/2; i++)
         {
             Vec3f p = position + Vec3f(i * d, 0, 0);
             Camera c;
             c.Setup(p, focus - p, up, Vec2f(float(aResolution.x), float(aResolution.y)), 45);
             mCameras.push_back(c);
         }
-
-        mCameraNumber = 3;
     }
 
     void BuildSceneSphere()
