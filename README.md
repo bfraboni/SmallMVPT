@@ -94,13 +94,13 @@ The MVPT algorithm is implemented in multiview.hxx. Short description of the MVP
     * continue with standard path tracing
     * accumulate indirect contributions
 
-## FEATURES and LIMITATIONS
+## Features
 
 The implementation is still compact and readable. Since no features were added 
 except a full glossy scene, please refer to the original SmallVCM description 
 for further details [SmallVCM](http://www.smallvcm.com/).
 
-## EXAMPLE
+## Example
 
 150s renderings of the glossy scene with exponent set to 4:
 
