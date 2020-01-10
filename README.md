@@ -103,6 +103,7 @@ for further details [SmallVCM](http://www.smallvcm.com/).
 ## EXAMPLE
 
 150s renderings of the glossy scene with exponent set to 4:
+
 |PT|MVPT|
 |:-:|:-:|
 |![](data/demo/noreuse.bmp)|![](data/demo/reuse.bmp)| 
