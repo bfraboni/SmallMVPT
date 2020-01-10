@@ -71,6 +71,7 @@ Usage: smallmvpt [ -s <scene_id> [exp] | -t <time> | -i <iteration> | -o <outpu
     mMinPathLength  Minimal path length (i.e. number of segments) (default 0)
     mMaxPathLength  Maximal path length (i.e. number of segments) (default 10)
     mResolution     Image resolution (default 512x512)
+    mCameraNumber   Number of cameras in the multi-view sequence (simple traveling)
 ```
 
 ## MVPT renderer
