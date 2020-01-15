@@ -58,7 +58,7 @@ public:
     }
 
     /*
-        We want to know how far a BRDF distribution is from 
+        We want to determine how far a BRDF distribution is from 
         another one, the same material properties for 2 different 
         outgoing directions. We need on-the-fly distance 
         evaluation between our BDRF distributions. 
@@ -123,6 +123,7 @@ public:
 
     // Compute the Jacobian of the transformation from one camera to another
     // for Pinhole camera model without lens.
+    // |T'| = |d(pl)/d(pf)| * |d(ps)/d(pl)| * |d(pl')/d(pf')|^{-1} * |d(ps)/d(pl')|^{-1}
     // For thin lens cameras model please refer to the paper formulas.
     float Jacobian(
         const Vec3f& aHitPoint, 
