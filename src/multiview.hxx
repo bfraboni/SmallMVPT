@@ -151,7 +151,6 @@ public:
         float dldf2 = lenSqrFilm2 / cosThetaFilm2;
     
         return dpdl1 * dldf1 / (dpdl2 * dldf2);        
-        // return lenSqr1 > 0 && cosTheta2 > 0 ? mScene.mCameras[aCam1].DfilmDlens(aRay1) * cosTheta1 / lenSqr1 * lenSqr2 / cosTheta2 / mScene.mCameras[aCam2].DfilmDlens(aRay2) : 0;
     }
 
     // Utility structure to store information of a sample / reuse ray
