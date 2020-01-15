@@ -143,7 +143,17 @@ public:
     {
         float cosTheta = Dot( aRay.dir, mForward );
         float lenSqr = mImagePlaneDist * mImagePlaneDist;
-        return lenSqr / (cosTheta * mImagePlaneArea);
+        return lenSqr / (cosTheta * cosTheta * cosTheta * mImagePlaneArea);
+    }
+
+    ///
+    /// @ brief Returns the derivatives of the film point w.r.t the lens point
+    ///
+    float DfilmDlens(const Ray& aRay) const
+    {
+        float cosTheta = Dot( aRay.dir, mForward );
+        float lenSqr = mImagePlaneDist * mImagePlaneDist;
+        return lenSqr / (cosTheta * cosTheta * cosTheta);
     }
 
     ///

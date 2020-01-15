@@ -124,21 +124,34 @@ public:
     // Compute the Jacobian of the transformation from one camera to another
     // for Pinhole camera model without lens.
     // For thin lens cameras model please refer to the paper formulas.
-    // For thick lens cameras, it needs to use the polynomial fit by J. Hanika
-    // and the associated derivatives.
     float Jacobian(
         const Vec3f& aHitPoint, 
         const Vec3f& aHitNormal, 
         const Ray& aRay1, 
-        const Ray& aRay2)
+        const int aCam1, 
+        const Ray& aRay2,
+        const int aCam2)
     {
         float lenSqr1 = (aHitPoint - aRay1.org).LenSqr();
         float cosTheta1 = std::max(0.f, Dot(aHitNormal, -aRay1.dir));
+        float dpdl1 = cosTheta1 / lenSqr1;
+
+        const Camera& cam1 = mScene.mCameras[aCam1];
+        float cosThetaFilm1 = Dot( aRay1.dir, cam1.mForward );
+        float lenSqrFilm1 = cam1.mImagePlaneDist * cam1.mImagePlaneDist / (cosThetaFilm1 * cosThetaFilm1);
+        float dldf1 = lenSqrFilm1 / cosThetaFilm1;
         
         float lenSqr2 = (aHitPoint - aRay2.org).LenSqr();
         float cosTheta2 = std::max(0.f, Dot(aHitNormal, -aRay2.dir));
+        float dpdl2 = cosTheta2 / lenSqr2;
 
-        return lenSqr1 > 0 && cosTheta2 > 0 ? cosTheta1 / lenSqr1 * lenSqr2 / cosTheta2 : 0;
+        const Camera& cam2 = mScene.mCameras[aCam2];
+        float cosThetaFilm2 = Dot( aRay2.dir, cam2.mForward );
+        float lenSqrFilm2 = cam2.mImagePlaneDist * cam2.mImagePlaneDist / (cosThetaFilm2 * cosThetaFilm2);
+        float dldf2 = lenSqrFilm2 / cosThetaFilm2;
+    
+        return dpdl1 * dldf1 / (dpdl2 * dldf2);        
+        // return lenSqr1 > 0 && cosTheta2 > 0 ? mScene.mCameras[aCam1].DfilmDlens(aRay1) * cosTheta1 / lenSqr1 * lenSqr2 / cosTheta2 / mScene.mCameras[aCam2].DfilmDlens(aRay2) : 0;
     }
 
     // Utility structure to store information of a sample / reuse ray
@@ -185,12 +198,12 @@ public:
                 continue;
 
             // compute the Jacobian determinant of the transformation between cameras
-            float jacobian = Jacobian(aPoint, aNormal, initialData.ray, data.ray);
+            float jacobian = Jacobian(aPoint, aNormal, initialData.ray, initialData.camID, data.ray, otherCamID);
             if( jacobian <= 0 ) 
                 continue;
 
             // compute the selection probability w.r.t Jacobian
-            float jacobianProb = std::max(1.f, jacobian);
+            float jacobianProb = std::min(1.f, jacobian);
 
             // compute the selection probability w.r.t material
             data.bsdf = BSDF<false>(data.ray, aIsect, mScene);
@@ -211,7 +224,6 @@ public:
             
             data.pdf = otherCamera.Pdf( data.ray );
             data.pdfTransformed = initialData.pdf * jacobian * alpha;
-            // data.J = 1.f / alpha;
             data.camID = otherCamID;
 
             oData.push_back( data );
@@ -232,17 +244,10 @@ public:
                 }
                 
                 // compute the Jacobian determinant of the transformation between cameras
-                float jacobian = Jacobian(aPoint, aNormal, dataj.ray, datak.ray);
-
-                float pdfK = datak.pdf;
-                float pdfFromJ = dataj.pdf * jacobian;
-                float J = pdfK / pdfFromJ;
+                float jacobian = Jacobian(aPoint, aNormal, dataj.ray, dataj.camID, datak.ray, datak.camID );
 
                 // compute the selection probability w.r.t Jacobian
-                // float jacobianProb = J > 1 ? 1 / J : J;
-                // float jacobianProb = J;
-                float jacobianProb = 1;
-                // float jacobianProb = jacobian < 1 ? jacobian : 1;
+                float jacobianProb = std::min(1.f, jacobian);
 
                 // compute the selection probability w.r.t material distance
                 float tv = TotalVariationDistance(aIsect, mScene, frame, dataj.ray, datak.ray, datak.bsdf);
