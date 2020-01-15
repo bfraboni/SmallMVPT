@@ -18,8 +18,7 @@ Disclaimer:
     used to render the images in the aforementioned paper. The provided scenes
 	are too simple to provide a complete understanding of the performance of
 	every implemented rendering algorithm and the differences between them.
-  * We are aware that the description below is not as detailed as it can be, and
-    apologize for any errors and confusion.
+  * We are aware that the description below is not as detailed as it can be,  and apologize for any errors and confusion.
   * If you have any questions and/or input w.r.t. improving and adding
     explanations, feel free to contact Basile Fraboni <basile.fraboni@insa-lyon.fr> 
     the primary author of the above paper, and we will figure out whatever you

@@ -189,14 +189,8 @@ public:
             if( jacobian <= 0 ) 
                 continue;
 
-            // data.pdf = otherCamera.Pdf( data.ray );
-            // data.pdfTransformed = initialData.pdf * jacobian;
-            // data.J = data.pdf / data.pdfTransformed;
-
             // compute the selection probability w.r.t Jacobian
-            // float jacobianProb = data.J > 1 ? 1 / data.J : data.J;
-            float jacobianProb = 1;
-            // float jacobianProb = jacobian < 1 ? jacobian : 1;
+            float jacobianProb = std::max(1.f, jacobian);
 
             // compute the selection probability w.r.t material
             data.bsdf = BSDF<false>(data.ray, aIsect, mScene);
